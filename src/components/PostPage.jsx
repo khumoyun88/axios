@@ -1,8 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
-const PostPage = ({ posts, handleDelete }) => {
+const PostPage = ({ posts, handleDelete , }) => {
+
+    
     const { id } = useParams();
     const post = posts.find(post => (post.id).toString() === id);
+    const navigate = useNavigate()
     
     return (
         <main className="PostPage">
@@ -14,6 +17,14 @@ const PostPage = ({ posts, handleDelete }) => {
                         <p className="postBody">{post.body}</p>
                         <button onClick={() => handleDelete(post.id)}>
                             Delete Post
+                        </button>
+                        <button  style={{
+                            marginLeft:"5px",
+                            backgroundColor:"gray",
+                            color: "white"
+
+                        }} onClick={() => handleDelete(-1)}>
+                            Cancel
                         </button>
                     </>
                 }

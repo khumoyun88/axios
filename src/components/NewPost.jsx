@@ -1,5 +1,5 @@
 const NewPost = ({
-    handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+    handleSubmit, postTitle, setPostTitle, postBody, setPostBody,  loading
 }) => {
     return (
         <main className="NewPost">
@@ -20,7 +20,9 @@ const NewPost = ({
                     value={postBody}
                     onChange={(e) => setPostBody(e.target.value)}
                 />
-                <button type="submit">Submit</button>
+                <button disabled={loading} type="submit">
+                    {loading ? "in Progress ..." : "Submit"}
+                </button>
             </form>
         </main>
     )

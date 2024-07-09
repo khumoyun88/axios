@@ -11,8 +11,8 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 
 import api from "./api/posts";
-// import  { axios } from "axios";
-import  axios  from "axios";
+// import  axios  from "axios";
+import useFetch from "./hooks/useFetch";
 
 
 // const initPostr = [
@@ -46,48 +46,53 @@ import  axios  from "axios";
 // ]
 
 function App() {
-  const [posts, setPosts] = useState([]);
+  
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
   const navigate = useNavigate();
+  const [newPostLoading , setNewPostLoading]  = useState("false")
 
-  const [loading , setLoading] = useState(true);
-  const [error , setError] = useState(null);
-
-
-  useEffect( () => {
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
+  const {data:posts, setData:setPosts, loading , error} = useFetch("/posts")
 
 
-    (async () => {
-      try {
-        const response = await api.get("/posts", { cancelToken: source.token });
-        setPosts(response.data);
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log("Request cancelled", error.message);
-        } else {
-          console.error(error.message);
-          setError(error.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
+  // const [posts, setPosts] = useState([]);
+  // const [loading , setLoading] = useState(true);
+  // const [error , setError] = useState(null);
 
-    return () => {
-      source.cancel("Fetch posts cancelled by user");
-    };
-  }, []);
+
+  // useEffect( () => {
+  //   const CancelToken = axios.CancelToken;
+  //   const source = CancelToken.source();
+
+
+  //   (async () => {
+  //     try {
+  //       const response = await api.get("/posts", { cancelToken: source.token });
+  //       setPosts(response.data);
+  //     } catch (error) {
+  //       if (axios.isCancel(error)) {
+  //         console.log("Request cancelled", error.message);
+  //       } else {
+  //         console.error(error.message);
+  //         setError(error.message);
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   })();
+
+  //   return () => {
+  //     source.cancel("Fetch posts cancelled by user");
+  //   };
+  // }, []);
 
 
 
 
   useEffect(() => {
-    setError(null)
+    // setError(null)
     const filteredResults = posts.filter(
       (post) =>
         post.body.toLowerCase().includes(search.toLowerCase()) ||
@@ -97,11 +102,21 @@ function App() {
     setSearchResults(filteredResults.reverse());
   }, [posts, search]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), "MMMM dd, yyyy pp");
+    
     const newPost = { id, title: postTitle, datetime, body: postBody };
+    setNewPostLoading(true)
+    try{
+      const response = await api.post("/posts", newPost)
+    }catch(error){
+      console.error(error.message)
+    }finally{
+      setNewPostLoading(false)
+    }
+
     const allPosts = [...posts, newPost];
     setPosts(allPosts);
     setPostTitle("");
@@ -109,7 +124,15 @@ function App() {
     navigate("/");
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async(id) => {
+    try {
+      const response = await api.delete(`/posts/${id}`)
+      
+    } catch (error) {
+      console.error(error.message)
+      
+    }
+
     const postsList = posts.filter((post) => post.id !== id);
     setPosts(postsList);
     navigate("/");
@@ -131,6 +154,8 @@ function App() {
               setPostTitle={setPostTitle}
               postBody={postBody}
               setPostBody={setPostBody}
+              loading= {newPostLoading}
+
             />
           }
         />
