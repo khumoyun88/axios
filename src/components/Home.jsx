@@ -1,9 +1,9 @@
 import Feed from './Feed';
 
-const Home = ({ posts }) => {
+const Home = ({ posts , loading }) => {
     return (
         <main className="Home">
-            {posts.length ? (
+            { loading ? <p>Loading...</p> : posts.length ? (
                 <Feed posts={posts} />
             ) : (
                 <p style={{ marginTop: "2rem" }}>
