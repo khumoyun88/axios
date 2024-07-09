@@ -52,41 +52,8 @@ function App() {
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
   const navigate = useNavigate();
-  const [newPostLoading , setNewPostLoading]  = useState("false")
-
+  const [newPostLoading , setNewPostLoading]  = useState(false)
   const {data:posts, setData:setPosts, loading , error} = useFetch("/posts")
-
-
-  // const [posts, setPosts] = useState([]);
-  // const [loading , setLoading] = useState(true);
-  // const [error , setError] = useState(null);
-
-
-  // useEffect( () => {
-  //   const CancelToken = axios.CancelToken;
-  //   const source = CancelToken.source();
-
-
-  //   (async () => {
-  //     try {
-  //       const response = await api.get("/posts", { cancelToken: source.token });
-  //       setPosts(response.data);
-  //     } catch (error) {
-  //       if (axios.isCancel(error)) {
-  //         console.log("Request cancelled", error.message);
-  //       } else {
-  //         console.error(error.message);
-  //         setError(error.message);
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   })();
-
-  //   return () => {
-  //     source.cancel("Fetch posts cancelled by user");
-  //   };
-  // }, []);
 
 
 
